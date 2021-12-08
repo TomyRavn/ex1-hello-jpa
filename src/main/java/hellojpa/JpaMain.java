@@ -59,7 +59,7 @@ public class JpaMain {
             tx.commit();                //커밋 필수
             //트랜젝션 커밋이 될 때 영속성 컨텍스트에 속해있는 쿼리가 DB에 날아가게 된다.
             //persist 등은 영속성 컨텍스트에서 이루어지는 작업이며, 영속성 컨텍스트에 영속상태(managed)로 속해진다.
-            //em.persist(member) => 영속, em.detach(member) => 준영속(영속성 컨텍스트에서 회원 엔티티 분리), em.remove(member) => 엔티티 삭제
+            //em.persist(member) or em.find() => 영속, em.detach(member) => 준영속(영속성 컨텍스트에서 회원 엔티티 분리), em.remove(member) => 엔티티 삭제
 
             /**
              * < 영속성 컨텍스트의 이점 >
@@ -91,7 +91,19 @@ public class JpaMain {
              * 4. 변경 감지(Dirty Checking)
              * ===> 영속성 컨텍스트에는 Entity와 스냅샷(DB에서 읽어왔던 초기 값)이 존재, 둘 을 비교해서 변경 감지 후 Update
              *
-             * 5. 지연 로딩(Lazy Loading)
+             * 5. 지연 로딩(Lazy Loading) (*****)
+             */
+
+            /**
+             * flush : 강제로 DB 처리부터 수행
+             * 모드 설정 가능(AUTO[DEFAULT], COMMIT)
+             * 1. em.flush()
+             * 2. 트랜젝션 커밋
+             * 3. createQuery
+             */
+
+            /**
+             * 준영속 상태 : detach(해당 em분리), clear(전체 em 초기화), close(em 닫기)
              */
 
         } catch (Exception e) {
