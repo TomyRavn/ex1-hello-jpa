@@ -57,6 +57,19 @@ public class JpaMain {
             //findMember.setName("HelloJPA");
 
             tx.commit();                //커밋 필수
+            //트랜젝션 커밋이 될 때 영속성 컨텍스트에 속해있는 쿼리가 DB에 날아가게 된다.
+            //persist 등은 영속성 컨텍스트에서 이루어지는 작업이며, 영속성 컨텍스트에 영속상태(managed)로 속해진다.
+            //em.persist(member) => 영속, em.detach(member) => 준영속(영속성 컨텍스트에서 회원 엔티티 분리), em.remove(member) => 엔티티 삭제
+
+            /**
+             * 영속성 컨텍스트의 이점
+             * 1. 1차 캐시
+             * 2. 동일성(identity) 보장
+             * 3. 트랜젝션을 지원하는 쓰기 지연(transactional write-behind)
+             * 4. 변경 감지(Dirty Checking)
+             * 5. 지연 로딩(Lazy Loading)
+             */
+
         } catch (Exception e) {
             tx.rollback();
         } finally {
