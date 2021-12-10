@@ -26,17 +26,17 @@ public class JpaMain {
 
         try{
             //등록
-            //Member member = new Member();
+            Member member = new Member();
             //member.setId(2L);
-            //member.setName("HelloB");
-            //em.persist(member);
+            member.setUsername("HelloB");
+            em.persist(member);
 
             //기본 조회
             //Member findMember = em.find(Member.class, 1L);
             //쿼리 조회
             //JPA는 테이블을 대상으로 쿼리를 짜지 않는다.
             //JPA는 객체를 대상으로 쿼리를 구성한다. (*****)
-            List<Member> result = em.createQuery("select m from Member as m", Member.class).getResultList(); // => Member 객체를 다 가져오라는 뜻
+            //List<Member> result = em.createQuery("select m from Member as m", Member.class).getResultList(); // => Member 객체를 다 가져오라는 뜻
                                                                                                                 // => m 이 Member Entity를 의미
 
             // => 페이지네이션 사례
@@ -47,9 +47,11 @@ public class JpaMain {
                     .getResultList();
              */
 
+            /*[ 1-1 ]
             for(Member member : result){
                 System.out.println("member.name = " + member.getName());
             }
+             */
 
             //삭제
             //em.remove(findMember);
