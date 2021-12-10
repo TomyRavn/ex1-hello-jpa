@@ -127,7 +127,7 @@ public class Member {
     //@Id
     //private String id;
 
-    @Id
+    //@Id
     //@GeneratedValue(strategy = GenerationType.AUTO) => DB 방언에 맞춰서 IDENTITY, SEQUENCE, TABLE 중에 선택
     //@GeneratedValue(strategy = GenerationType.IDENTITY) => AUTO_INCREMENT 가 대표적
     //                (*****) IDENTITY 전략은 ID값을 INSERT해야 알 수 있기 때문에, 영속 상태를 위해 해당 전략에 한하여 persist 시 바로 INSERT 쿼리를 DB에 날림
@@ -137,14 +137,26 @@ public class Member {
     //시퀀스 명 수동 설정
     //@GeneratedValue(strategy = GenerationType.SEQUENCE,
     //                           generator = "MEMBER_SEQ_GENERATOR")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;            //SEQUENCE 타입일 때 String은 비허용
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    //private Long id;            //SEQUENCE 타입일 때 String은 비허용
                                 //int : 0이 포함되어 적합하지 않음, Integer : 10억 + @의 값을 처리 못함(다시 초기값)
                                 //Long : 성능상 문제가 떨어질 수 있음이 우려되지만, 전체 Application 상으로 봤을 때 큰 차이가 없음
                                 //타입을 다시 바꾸는게 더 어려운 문제이므로, Long을 권장
 
-    @Column
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
+    private Long id;
+
+    @Column(name = "USERNAME")
     private String username;
+
+    //[ 2-1 ] 객체지향스럽지 못함
+    //@Column(name = "TEAM_ID")
+    //private long teamId;
+
+    @ManyToOne //(fetch = FetchType.LAZY) : 지연 로딩 전략 => 조회 시 따로따로 가져옴(SELECT 쿼리 분리)
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
     /** getter, setter */
     public Long getId() {
@@ -162,8 +174,25 @@ public class Member {
     public void setUsername(String username) {
         this.username = username;
     }
-    
-    
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    /* [ 2-1 ] 객체지향스럽지 못함
+    public long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
+    }
+     */
+
     /** [ 기본 키 매핑 ]
      * @Id : 직접 할당(문자 조합 등의 처리 후 직접 key 값 할당, AUTO INCREMENT X)
      * @GeneratedValue : 자동생성

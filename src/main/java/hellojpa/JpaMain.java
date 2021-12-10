@@ -26,10 +26,10 @@ public class JpaMain {
 
         try{
             //등록
-            Member member = new Member();
+            //Member member = new Member();
             //member.setId(2L);
-            member.setUsername("HelloB");
-            em.persist(member);
+            //member.setUsername("HelloB");
+            //em.persist(member);
 
             //기본 조회
             //Member findMember = em.find(Member.class, 1L);
@@ -57,6 +57,30 @@ public class JpaMain {
             //em.remove(findMember);
             //수정(따로 persist 등의 작업이 필요없음, Java Collection처럼 처리)
             //findMember.setName("HelloJPA");
+
+
+            /* [ 2-1 ]
+            *  객체를 테이블에 맞추어 모델링한 경우(외래키 식별자를 직접 다룸) => 객체지향과는 거리가 멀다
+            *
+            *  ===> 협력 관계를 만들 수 없다(패러다임의 차이)
+            *  - 테이블 : 외래키로 조인
+            *  - 객체 : 참조
+            */
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            //member.setTeamId(team.getId());
+            member.setTeam(team);
+            em.persist(member);
+
+            Member findMember = em.find(Member.class, member.getId());
+
+            //Long findTeamId = findMember.getTeamId();
+            //Team findTeam = em.find(Team.class, findTeamId);
+            Team findTeam = findMember.getTeam();
 
             tx.commit();                //커밋 필수
             //트랜젝션 커밋이 될 때 영속성 컨텍스트에 속해있는 쿼리가 DB에 날아가게 된다.
