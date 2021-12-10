@@ -16,8 +16,24 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
+            <!-- 배치 처리 사이즈 설정 -->
             <!-- <property name="hibernate.jdbc.batch_size" value="10" /> -->
-            <!-- <property name="hibernate.hbm2ddl.auto" value="create" /> -->
+            <!-- DB 스키마 자동 생성 -->
+            <!-- [모드 종류] => 1. create : DROP + CREATE, 2. create-drop : DROP + CREATE + DROP,
+             3. update : alter (추가만 허용, 삭제 불가), 4. validate : 엔티티와 테이블 정상 매핑, 5. none 또는 아무 글자 : 주석한 것과 동일한 효과(옵션 OFF)  -->
+             <property name="hibernate.hbm2ddl.auto" value="create" />
+
+            <!--
+            *** 운영장비에는 절대 create, update, create-drop 사용하면 안됨 => 개발에서 서버로 코드 옮길 시에도 모드의 여부를 꼭 확인!!!!!
+            - 개발 초기 단계 : create, update
+            - 테스트 서버 : update, validate
+            - 스테이징과 운영 서버 : validate, none
+            가급적이면 쓰지말 것, 데이터가 날아감
+            직접 스크립트를 짜서 검수 후 도입
+
+            ***** 웹 어플리케이션 계정은 alter나 drop을 하지 못하도록 계정을 분리해야함
+           -->
+
         </properties>
     </persistence-unit>
 </persistence>
