@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.awt.*;
 import java.util.List;
 
 public class JpaMain {
@@ -76,11 +77,31 @@ public class JpaMain {
             member.setTeam(team);
             em.persist(member);
 
+            em.flush();
+            em.clear();
+
             Member findMember = em.find(Member.class, member.getId());
 
             //Long findTeamId = findMember.getTeamId();
             //Team findTeam = em.find(Team.class, findTeamId);
-            Team findTeam = findMember.getTeam();
+//            Team findTeam = findMember.getTeam();
+
+            List<Member> members = findMember.getTeam().getMembers();
+
+            for (Member m : members) {
+                System.out.println("m.getUsername() = " + m.getUsername());
+            }
+
+            //Team team = new Team();
+            //team.setName("TeamA");
+            //em.persist(team);
+            //
+            //Member member = new Member();
+            //member.setName("member1");
+            //
+            // //역방향(주인이 아닌 방향)만 연관관계 설정한 경우 DB에 변화X (*****)
+            //team.getMembers().add(member);
+            //em.persist(member);
 
             tx.commit();                //커밋 필수
             //트랜젝션 커밋이 될 때 영속성 컨텍스트에 속해있는 쿼리가 DB에 날아가게 된다.
