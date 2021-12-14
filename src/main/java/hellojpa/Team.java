@@ -17,6 +17,12 @@ public class Team {
     private List<Member> members = new ArrayList<>();       //ArrayList로 초기화하는 관례 ; NULL로 뜨지 않음
                                                             //기본적으로는 단방향 연관관계가 좋다 => 복잡성 감소
 
+    //*** 연관관계 편의 메소드는 어떤 쪽에서 해도 무방하나, 양쪽에 다 있으면 문제가 발생할 수 있다.(무한루프 등 발생 가능성)
+    //public void addMember(Member member){
+    //    member.setTeam(this);
+    //    members.add(member);
+    //}
+
     /** => members의 값을 변경해도 연관관계의 주인이 아니기 때문에 DB에 값 변경 X */
 
 

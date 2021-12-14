@@ -183,6 +183,15 @@ public class Member {
         this.team = team;
     }
 
+    //*** 연관관계 편의 메소드
+    //setter는 JAVA의 관례이므로, 로직이 들어간 경우 별도 표시를 위해 메소드명 변경
+    public void changeTeam(Team team) {
+        this.team = team;
+        
+        //원래는 null 체크, 기존 값에서 제외 등 처리해야 할 로직이 있지만, 여기서는 테스트용으로 간단하게 처리하였음
+        team.getMembers().add(this);
+    }
+
     /* [ 2-1 ] 객체지향스럽지 못함
     public long getTeamId() {
         return teamId;

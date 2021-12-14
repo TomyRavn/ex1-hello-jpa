@@ -74,9 +74,36 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
             //member.setTeamId(team.getId());
-            member.setTeam(team);
+            member.changeTeam(team);               //*** 메소드를 원자적으로 쓸 수 있음(연관관계 편의 메소드)
             em.persist(member);
 
+
+            ////////////////////////////////////////////////////////////////////////////
+
+            //team.getMembers().add(member);    //=> DB 반영 X : 연관 관계의 주인이 아님
+            //=> 그러나, 순수한 객체 관계를 고려했을 시 양쪽 다 값을 입력하는 게 정확한 표현 (*****)
+            //=> flush(), clear()를 하지 않은 경우, 해당 코드를 제외 시 2가지 문제 발생
+
+            /** 1.
+             * Team findTeam = em.find(Team.class, team.getId());   //1차 캐시
+             * List<Member> members = findTeam.getMembers();        //=>flush, clear를 하지 않으면 값이 반영되지 않은 상태의 members가 조회
+             */
+
+            /** 2.
+             * TESTCASE 작성 시 문제 발생
+             * JPA 없이 동작할 수 있도록, 순수한 자바상태에서 동작하는지 테스트를 필요로 할 때 문제 발생
+             */
+
+            //==> 하지만, 추가하는 것을 실수할 수 있다. 그렇기 때문에 "연관관계 편의 메소드"를 생성!!(Member에 추가 작성)
+            //    연관관계 편의 메소드 : 'Member의 changeTeam에 team.getMembers().add(this);'
+
+            //[ 양방향 매핑시 주의점 ]
+            //무한 루프 : toString(), lombok, JSON 생성 라이브러리
+            //왜?? Member에서도 Team을 toString, Team에서도 Member를 toString하면서 양쪽이 계속 서로 호출
+            //JSON 생성 라이브러리 : Controller에서는 Entity를 절대 반환하지마라!! => Controller에서의 Entity는 DTO(값만 있는)로 변환해서 반환하는 것을 권장 (*****)
+            //Entity를 API에 반환해버리면 API 스펙이 바뀌어버리는 경우도 발생
+
+            ////////////////////////////////////////////////////////////////////////////
             em.flush();
             em.clear();
 
