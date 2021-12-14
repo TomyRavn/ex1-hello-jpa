@@ -17,6 +17,12 @@ public class Team {
     private List<Member> members = new ArrayList<>();       //ArrayList로 초기화하는 관례 ; NULL로 뜨지 않음
                                                             //기본적으로는 단방향 연관관계가 좋다 => 복잡성 감소
 
+    //* 일대다 관계에서, 연관관계의 주인인 경우
+    //@OneToMany
+    //@JoinColumn(name = "TEAM_ID")                         //필수!
+    //private List<Member> members = new ArrayList<>();
+    //=> update 쿼리가 추가로 발생하게 됨
+
     //*** 연관관계 편의 메소드는 어떤 쪽에서 해도 무방하나, 양쪽에 다 있으면 문제가 발생할 수 있다.(무한루프 등 발생 가능성)
     //public void addMember(Member member){
     //    member.setTeam(this);

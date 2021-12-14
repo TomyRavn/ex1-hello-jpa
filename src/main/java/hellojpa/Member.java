@@ -158,6 +158,15 @@ public class Member {
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
+    //일대다 양방향 처리(비공식)
+    //@ManyToOne
+    //@JoinColumn(name = "TEAM_ID", /* insertable = false, updatable = false */)    //연관관계의 주인처럼 보이지만 속성을 강제로 주입해 읽기전용으로 처리
+    //private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")                 //Default가 있지만 지저분하므로 지정
+    private Locker locker;
+
     /** getter, setter */
     public Long getId() {
         return id;
