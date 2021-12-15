@@ -214,6 +214,22 @@ public class JpaMain {
              *                   / MEMBER, MEMBER_PRODUCT, PRODUCT -> MEMBER, ORDER (승격), PRODUCT (***)
              */
 
+
+            /**
+             * 1. @JoinColumn의 속성
+             *     - name : 매핑할 외래 키 이름(Default : 필드명 + _ + 참조테이블 기본키 컬럼명)
+             *     - referencedColumnName : 외래키가 참조하는 대상 테이블 컬럼명(참조테이블 기본키 컬럼명)
+             *     - foreignKey(DDL) : 외래 키 직접 지정(매핑), 테이블 생성 시에만 적용
+             *     - + unique, nullable, insertable, updatable, columnDefinition, table 속성
+             * 2. @ManyToOne 속성
+             *     - optional : false로 설정 시 연관 엔티티가 항상 있어야 함(Default : TRUE)
+             *     - fetch : 글로벌 페치 전략 설정(Default : @ManyToOne -> FetchType.EAGER, @OneToMany -> FetchType.LAZY)
+             *     - cascade : 영속성 전이 기능 사용
+             *     - targetEntity : 연관된 엔티티 타입 정보 설정(거의 사용 X), 컬렉션을 사용해도 제네릭으로 타입 정보 확인 가능
+             * 3. @OneToMany 속성
+             *     - mappedBy : 연관관계의 주인 필드 선택
+             *     - 나머지는 ManyToOne과 동일
+             */
         } catch (Exception e) {
             tx.rollback();
         } finally {
