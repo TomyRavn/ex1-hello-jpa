@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Team {
+public class Team extends BaseEntity{                       //@Entity 클래스는 @Entity나 @MappedSuperclass로 지정한 클래스만 상속 가능하다
 
     @Id @GeneratedValue
     @Column(name = "TEAM_ID")

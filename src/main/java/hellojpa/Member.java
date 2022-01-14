@@ -2,6 +2,7 @@ package hellojpa;
 
 //import javax.persistence.Column;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 //import javax.persistence.Table;
 
@@ -26,7 +27,7 @@ import java.util.Date;
 // name : 식별자 생성기 이름(필수), table : 키생성 테이블명(Default : "hibernate_sequences"), pkColumnName : 시퀀스 컬럼명(Default : "sequence_name"), valueColumnNa : 시퀀스 값 컬럼명(Default : "next_val"),
 // pkColumnValue : 키로 사용할 값 이름(Default : 엔티티 이름), initialValue : 초기 값/마지막으로 생성된 값 기준(Default : 0), allocationSize : 시퀀스 당 증가 값(Default : 50), catalog, schema, uniqueConstraints : 유니크 제약조건 지정
 @Entity
-public class Member {
+public class Member extends BaseEntity{
 
     //[ 1-1 ]
     //@Id
@@ -191,6 +192,7 @@ public class Member {
     public void setTeam(Team team) {
         this.team = team;
     }
+
 
     //*** 연관관계 편의 메소드
     //setter는 JAVA의 관례이므로, 로직이 들어간 경우 별도 표시를 위해 메소드명 변경
