@@ -67,15 +67,15 @@ public class JpaMain {
             *  - 테이블 : 외래키로 조인
             *  - 객체 : 참조
             */
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
-
-            Member member = new Member();
-            member.setUsername("member1");
-            //member.setTeamId(team.getId());
-            member.changeTeam(team);               //*** 메소드를 원자적으로 쓸 수 있음(연관관계 편의 메소드)
-            em.persist(member);
+//            Team team = new Team();
+//            team.setName("TeamA");
+//            em.persist(team);
+//
+//            Member member = new Member();
+//            member.setUsername("member1");
+//            //member.setTeamId(team.getId());
+//            member.changeTeam(team);               //*** 메소드를 원자적으로 쓸 수 있음(연관관계 편의 메소드)
+//            em.persist(member);
 
 
             ////////////////////////////////////////////////////////////////////////////
@@ -104,20 +104,20 @@ public class JpaMain {
             //Entity를 API에 반환해버리면 API 스펙이 바뀌어버리는 경우도 발생
 
             ////////////////////////////////////////////////////////////////////////////
-            em.flush();
-            em.clear();
-
-            Member findMember = em.find(Member.class, member.getId());
+//            em.flush();
+//            em.clear();
+//
+//            Member findMember = em.find(Member.class, member.getId());
 
             //Long findTeamId = findMember.getTeamId();
             //Team findTeam = em.find(Team.class, findTeamId);
-//            Team findTeam = findMember.getTeam();
+    //        Team findTeam = findMember.getTeam();
 
-            List<Member> members = findMember.getTeam().getMembers();
-
-            for (Member m : members) {
-                System.out.println("m.getUsername() = " + m.getUsername());
-            }
+//            List<Member> members = findMember.getTeam().getMembers();
+//
+//            for (Member m : members) {
+//                System.out.println("m.getUsername() = " + m.getUsername());
+//            }
 
             //Team team = new Team();
             //team.setName("TeamA");
@@ -130,7 +130,7 @@ public class JpaMain {
             //team.getMembers().add(member);
             //em.persist(member);
 
-            tx.commit();                //커밋 필수
+//            tx.commit();                //커밋 필수
             //트랜젝션 커밋이 될 때 영속성 컨텍스트에 속해있는 쿼리가 DB에 날아가게 된다.
             //persist 등은 영속성 컨텍스트에서 이루어지는 작업이며, 영속성 컨텍스트에 영속상태(managed)로 속해진다.
             //em.persist(member) or em.find() => 영속, em.detach(member) => 준영속(영속성 컨텍스트에서 회원 엔티티 분리), em.remove(member) => 엔티티 삭제
@@ -230,6 +230,50 @@ public class JpaMain {
              *     - mappedBy : 연관관계의 주인 필드 선택
              *     - 나머지는 ManyToOne과 동일
              */
+
+
+            /**
+             * PROXY
+             * < 특징 >
+             * 1. 실제 클래스를 상속 받아 실제 클래스와 겉 모양이 동일하다.
+             * 2. 처음 사용할 때 한 번만 초기화
+             * 3. 프록시 객체 초기화 시 , 프록시 객체가 실제 엔티티로 바뀌지 않음, 실제 엔티티에 접근 가능할 뿐임
+             * 4. 프록시 객체는 원본 엔티티를 상속 받으므로, 타입 체크 시 유의(== 비교 X, instance of O)
+             * 5. 영속성 컨텍스트에 엔티티가 이미 있으면, em.getReference()를 호출해도 실제 엔티티 반환
+             *    em.gerReference()로 호출했다면, DB 재조회가 필요하지 않다면 em.find()를 해도 proxy 객체로 반환
+             * 6. 영속성 컨텍스트의 도움을 받을 수 없는 준영속 상태일 때, 프록시 초기화 시 LazyInitializationException 에러 발생
+             *    프록시 객체는 영속성 컨텍스트를 통해 초기화 요청
+             *
+             * < 제공되는 메소드 >
+             * 1. emf.getPersistenceUnitUtil().isLoaded(refMember) //PersistenceUnitUtil.isLoaded(Object entity)를 통해 프록시 객체의 초기화 여부 확인
+             * 2. refMember.getClass() //프록시 클래스 확인
+             * 3. 프록시 강제 초기화 => 하이버네이트 제공 Hibernate.initialize(refMember);  //JPA 표준 X => JPA는 member.getName()처럼 강제 호출을 통해 초기화
+             */
+
+            Member member = new Member();
+            member.setUsername("hello");
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            //
+//            Member findMember = em.find(Member.class, member.getId());
+            //가짜 Reference => getReference 호출 시점에는 쿼리가 작성되지 않음
+            Member findMember = em.getReference(Member.class, member.getId());
+
+            System.out.println("findMember.getClass() = " + findMember.getClass());     //em.find는 실제 엔티티 객체를 조회하지만, getReference는 DB 조회를 미루는 가짜 엔티티객체 조회
+            // ==> Member class가 아닌 class hellojpa.Member$HibernateProxy$KMjGI3ga 로 출력, 즉 Hibernate가 강제로 만든 가짜 class(Proxy class)
+            System.out.println("findMember.id = " + findMember.getId());
+            //Id 조회는 getReference 호출 시 인자로 전달해 알고 있어, DB 조회없이 처리 가능
+            System.out.println("findMember.username = " + findMember.getUsername());
+            //Username은 알지 못하므로, 영속성 컨텍스트에 초기화 요청 -> 영속성 컨텍스트에서 DB 조회 -> 실제 Entity 생성 -> Proxy Class의 target을 통해 값 전달
+
+
+
+            tx.commit();
+
         } catch (Exception e) {
             tx.rollback();
         } finally {

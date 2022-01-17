@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn                //무엇 때문에 INSERT되었는지 알려주기 위한 COLUMN 지정(DEFAULT : DTYPE) //(name = "DIS_TYPE") 이름 변경도 가능 //SINGLE_TABLE 전략에서는 어노테이션 없어도 자동 생성됨
+//@DiscriminatorColumn                //무엇 때문에 INSERT되었는지 알려주기 위한 COLUMN 지정(DEFAULT : DTYPE) //(name = "DIS_TYPE") 이름 변경도 가능 //SINGLE_TABLE 전략에서는 어노테이션 없어도 자동 생성됨
 public abstract class Item {        //추상 클래스로 만들지 않으면 Item을 독자적으로 쓸 때도 있다는 의미이므로, TABLE_PER_CLASS전략에서도 ITEM 테이블이 생성됨
 
     /* 
